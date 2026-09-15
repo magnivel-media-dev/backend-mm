@@ -71,11 +71,14 @@ class UploadValidator:
 
     def validate_magic_bytes(self, file_obj, ext):
         try:
+            # Always rewind to the start so validation works even when a prior read moved the pointer.
+            if hasattr(file_obj, "seek"):
+                file_obj.seek(0)
             # Check image magic bytes using Pillow
             with Image.open(file_obj) as img:
                 img.verify()  # verify checks the integrity without fully loading
                 file_format = img.format
-                
+
                 # Verify that format matches extension
                 expected_exts = FORMAT_TO_EXTENSIONS.get(file_format, set())
                 if expected_exts and ext not in expected_exts:
@@ -89,8 +92,9 @@ class UploadValidator:
             raise ValidationError("Failed to validate image file.")
         finally:
             # Reset file pointer to beginning for subsequent reads
-            file_obj.seek(0)
-            
+            if hasattr(file_obj, "seek"):
+                file_obj.seek(0)
+
         return file_format
 
     def validate(self, file_obj):
@@ -99,7 +103,10 @@ class UploadValidator:
         filename = getattr(file_obj, 'name', 'unknown.jpg')
         content_type = getattr(file_obj, 'content_type', 'image/jpeg') # Fallback if not an UploadedFile
         file_size = getattr(file_obj, 'size', -1)
-        
+
+        if hasattr(file_obj, "seek"):
+            file_obj.seek(0)
+
         if file_size == -1:
             # Attempt to determine size by seeking
             current_pos = file_obj.tell()

@@ -86,6 +86,12 @@ class TestUploadValidator(TestCase):
         with self.assertRaises(ValidationError):
             validator.validate(file)
 
+    def test_validates_file_even_after_stream_has_been_read(self):
+        file = create_test_image(format='JPEG', filename='test.jpg')
+        file.read(4)
+        validator = UploadValidator(upload_type='cover')
+        validator.validate(file)
+
 
 class TestImageProcessor(TestCase):
 
@@ -117,6 +123,13 @@ class TestImageProcessor(TestCase):
         result = processor.process(file)
         img = Image.open(result['buffer'])
         self.assertEqual(img.mode, 'RGB')
+
+    def test_processes_file_even_after_stream_has_been_read(self):
+        file = create_test_image(format='JPEG', filename='test.jpg')
+        file.read(4)
+        processor = ImageProcessor()
+        result = processor.process(file)
+        self.assertEqual(result['format'], 'webp')
 
     def test_compression(self):
         file = create_test_image(width=800, height=600, format='JPEG', filename='test.jpg')

@@ -48,7 +48,10 @@ class ImageProcessor:
         6. Return results
         """
         start_time = time.time()
-        
+
+        if hasattr(file_obj, 'seek'):
+            file_obj.seek(0)
+
         # Determine original file size for stats
         original_size = 0
         if hasattr(file_obj, 'size'):
@@ -104,7 +107,10 @@ class ImageProcessor:
                     f"new_size={processed_size} bytes, "
                     f"ratio={compression_ratio:.2f}, time={time_taken:.3f}s"
                 )
-                
+
+                if hasattr(file_obj, 'seek'):
+                    file_obj.seek(0)
+
                 return {
                     'buffer': output_buffer,
                     'width': width,
@@ -113,7 +119,7 @@ class ImageProcessor:
                     'format': 'webp',
                     'mime_type': 'image/webp'
                 }
-                
+
         except Exception as e:
             logger.error(f"Error processing image: {str(e)}", exc_info=True)
             raise
