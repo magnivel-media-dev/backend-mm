@@ -55,7 +55,7 @@ def _cloudinary_config():
 
 DEBUG = False
 
-DEFAULT_PUBLIC_API_DOMAIN = "api.magnivelinternational.org"
+DEFAULT_PUBLIC_API_DOMAIN = "api.magnivel.org"
 DEFAULT_FRONTEND_ORIGINS = [
     "https://magnivelinternational.org",
     "https://www.magnivelinternational.org",
