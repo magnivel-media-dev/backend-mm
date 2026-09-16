@@ -55,7 +55,7 @@ def _cloudinary_config():
 
 DEBUG = False
 
-DEFAULT_PUBLIC_API_DOMAIN = "api.magnivel.org"
+DEFAULT_PUBLIC_API_DOMAIN = "api.magnivelinternational.org"
 DEFAULT_FRONTEND_ORIGINS = [
     "https://magnivelinternational.org",
     "https://www.magnivelinternational.org",
@@ -65,18 +65,12 @@ DEFAULT_ADMIN_FRONTEND_ORIGINS = ["https://admin.magnivelinternational.org"]
 
 CONFIGURED_FRONTEND_ORIGINS = _unique(
     [
+        *DEFAULT_FRONTEND_ORIGINS,
+        *DEFAULT_ADMIN_FRONTEND_ORIGINS,
         *_csv_env_values("CORS_ALLOWED_ORIGINS", "FRONTEND_URLS"),
         *_configured_values("FRONTEND_URL", "ADMIN_FRONTEND_URL"),
     ]
 )
-
-if not CONFIGURED_FRONTEND_ORIGINS:
-    CONFIGURED_FRONTEND_ORIGINS = _unique(
-        [
-            *DEFAULT_FRONTEND_ORIGINS,
-            *DEFAULT_ADMIN_FRONTEND_ORIGINS,
-        ]
-    )
 
 ALLOWED_HOSTS = _unique(
     [
